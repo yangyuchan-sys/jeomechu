@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>동네 한 끼</title>
+<style>
+:root{--site-primary:#245b45;--site-secondary:#eaf2ed;--site-background:#ffffff;--site-on-primary:#ffffff;--site-on-secondary:#244b39;--site-on-background:#202923;--site-font-body:Inter,'Noto Sans KR',system-ui,sans-serif;--site-font-heading:Inter,'Noto Sans KR',system-ui,sans-serif;--site-heading-scale:1;--site-spacing-scale:1;--site-radius-scale:1;--site-decoration-opacity:1;color-scheme:light dark}
+*{box-sizing:border-box}body{margin:0;background:light-dark(#fff,#141916);color:light-dark(#202923,#edf3ef);font-family:var(--site-font-body)}#app{min-height:100vh;background-color:var(--site-background);color:light-dark(#202923,#edf3ef);border-radius:0}.wrap{max-width:1100px;margin:auto;padding:0 24px}.top{height:76px;border-bottom:1px solid light-dark(#e8ece9,#303a34);display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;font-size:23px;letter-spacing:-1px;color:var(--site-primary)}.brand small{display:block;font-size:10px;letter-spacing:1px;color:#84938a;font-weight:600}.location{border:1px solid #e2e8e3;border-radius:30px;padding:10px 14px;background:transparent;color:inherit}.hero{padding:38px 0 25px}.eyebrow{font-size:12px;color:#64816f;font-weight:750;letter-spacing:1px}.hero h1{font-size:calc(32px * var(--site-heading-scale));letter-spacing:-1.5px;margin:9px 0}.hero p{margin:0;color:#7b877f;font-size:14px}.search{margin-top:22px;display:flex;gap:9px}.search input{flex:1;min-width:0;border:1px solid #e4e9e5;border-radius:13px;padding:14px 16px;font-size:14px;background:transparent;color:inherit}.btn{border:0;border-radius:12px;padding:12px 17px;background:var(--site-primary);color:white;font-weight:700;cursor:pointer}.filters{display:flex;gap:8px;overflow:auto;padding:5px 0 20px}.chip{white-space:nowrap;border:1px solid #e5eae6;background:transparent;color:inherit;border-radius:30px;padding:8px 14px;cursor:pointer;font-size:13px}.chip.active{background:var(--site-secondary);border-color:var(--site-secondary);color:var(--site-on-secondary);font-weight:750}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:12px 0 15px}.sectionhead h2{font-size:19px;letter-spacing:-.5px;margin:0}.muted{color:#89948d;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{border:1px solid #e9edea;border-radius:18px;overflow:hidden;background:light-dark(#fff,#1d2520);cursor:pointer;transition:.18s}.card:hover{transform:translateY(-2px);box-shadow:0 8px 25px #193d2510}.food{height:135px;display:grid;place-items:center;font-size:62px;background:#f2e9df}.cardbody{padding:15px}.meta{font-size:11px;color:#8a968e}.card h3{font-size:16px;margin:7px 0 5px;letter-spacing:-.3px}.desc{font-size:12px;color:#758078;line-height:1.5;min-height:36px}.bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:#87928a}.like{border:0;background:transparent;color:#728078;cursor:pointer;font-size:13px}.like.on{color:#d45d62}.price{font-weight:750;color:#34483b}.empty{padding:35px;text-align:center;color:#8b968e;grid-column:1/-1}.footer{padding:30px 0 45px;color:#9aa49d;font-size:11px;text-align:center}.modalback{position:fixed;inset:0;background:#1119;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal{width:min(500px,100%);background:light-dark(#fff,#202923);border-radius:20px;padding:23px;max-height:90vh;overflow:auto}.modal h2{margin:0 0 18px}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;color:#738078}.field input,.field textarea,.field select{width:100%;border:1px solid #e1e8e2;border-radius:10px;padding:12px;background:transparent;color:inherit;font:inherit}.field textarea{min-height:85px;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.secondary{background:#eef2ef;color:#3b5143}.close{float:right;border:0;background:transparent;font-size:22px;cursor:pointer;color:inherit}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#263a2e;color:white;padding:11px 16px;border-radius:30px;font-size:13px;display:none;z-index:8}
+@media(max-width:760px){.wrap{padding:0 17px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.food{height:110px;font-size:52px}.hero{padding-top:28px}.hero h1{font-size:28px}.cardbody{padding:12px}}@media(max-width:440px){.grid{grid-template-columns:1fr}.food{height:130px}}
+</style></head><body><div id="app"><header class="top wrap"><div class="brand">동네 한 끼<small>YOUR NEIGHBORHOOD FOOD PICK</small></div><button class="location" id="region">📍 서울 마포구 ▾</button></header><main class="wrap"><section class="hero"><div class="eyebrow">오늘 저녁, 뭐 먹지?</div><h1>우리 동네 사람들의<br>진짜 한 끼 추천</h1><p>광고보다 솔직한 이웃들의 메뉴 추천을 만나보세요.</p><div class="search"><input id="search" placeholder="메뉴, 동네, 음식점 검색"><button class="btn" id="searchBtn">검색</button></div></section><nav class="filters" id="filters"></nav><div class="sectionhead"><h2>동네 추천 피드</h2><select id="sort" class="chip"><option value="popular">인기순</option><option value="latest">최신순</option></select></div><section class="grid" id="feed"></section><div class="footer">동네 한 끼 · 우리 동네의 맛있는 발견</div></main><div style="position:fixed;right:24px;bottom:24px"><button class="btn" id="write">＋ 추천 작성하기</button></div></div>
+<div class="modalback" id="back"><div class="modal"><button class="close" id="close">×</button><h2>오늘의 한 끼 추천</h2><form id="postForm"><div class="field"><label>메뉴 이름</label><input name="title" required placeholder="예: 얼큰 순두부찌개"></div><div class="field"><label>가격 (원)</label><input name="price" type="number" min="0" placeholder="9000"></div><div class="field"><label>음식 종류</label><select name="category"><option>전체</option><option>한식</option><option>중식</option><option>일식</option><option>양식</option><option>분식</option><option>기타</option></select></div><div class="field"><label>동네</label><input name="area" required placeholder="예: 합정동"></div><div class="field"><label>추천 이유</label><textarea name="desc" required placeholder="왜 추천하는지 알려주세요"></textarea></div><div class="field"><label>작성자 닉네임</label><input name="author" placeholder="동네주민"></div><div class="actions"><button type="button" class="btn secondary" id="cancel">취소</button><button class="btn">등록하기</button></div></form></div></div><div class="toast" id="toast"></div>
+<script>
+const categories=['전체','한식','중식','일식','양식','분식','카페','기타'];let active='전체';let posts=[{id:1,title:'얼큰한 순두부찌개',price:9000,category:'한식',area:'합정동',emoji:'🍲',desc:'국물이 진하고 밥 한 공기 뚝딱하기 좋아요.',author:'밥심',likes:28},{id:2,title:'바삭한 돈카츠 정식',price:11000,category:'일식',area:'망원동',emoji:'🍱',desc:'고기가 두툼하고 튀김옷이 바삭해요.',author:'오늘뭐먹지',likes:21},{id:3,title:'매콤달콤 떡볶이',price:5000,category:'분식',area:'서교동',emoji:'🍢',desc:'학교 끝나고 먹기 좋은 추억의 맛!',author:'먹보',likes:17},{id:4,title:'고소한 크림 파스타',price:13500,category:'양식',area:'연남동',emoji:'🍝',desc:'소스가 꾸덕하고 양도 넉넉합니다.',author:'파스타러버',likes:14},{id:5,title:'든든한 제육덮밥',price:8500,category:'한식',area:'상수동',emoji:'🍚',desc:'불향이 살아 있고 가성비가 좋아요.',author:'동네주민',likes:12},{id:6,title:'신선한 연어초밥',price:15000,category:'일식',area:'망원동',emoji:'🍣',desc:'재료가 신선하고 깔끔한 한 끼예요.',author:'초밥한점',likes:9}];let liked=new Set();const $=s=>document.querySelector(s);function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',1800)}function renderFilters(){$('#filters').innerHTML=categories.map(c=>`<button class="chip ${c===active?'active':''}" data-cat="${c}">${c}</button>`).join('')}function render(){let q=$('#search').value.toLowerCase();let list=posts.filter(p=>(active==='전체'||p.category===active)&&[p.title,p.area,p.desc].join(' ').toLowerCase().includes(q));list.sort((a,b)=>$('#sort').value==='popular'?b.likes-a.likes:b.id-a.id);$('#feed').innerHTML=list.length?list.map(p=>`<article class="card"><div class="food">${p.emoji||'🍽️'}</div><div class="cardbody"><div class="meta">${p.area} · ${p.category}</div><h3>${esc(p.title)}</h3><div class="desc">${esc(p.desc)}</div><div class="bottom"><span class="price">${Number(p.price).toLocaleString()}원</span><button class="like ${liked.has(p.id)?'on':''}" data-like="${p.id}">♥ ${p.likes}</button></div></div></article>`).join(''):'<div class="empty">검색 결과가 없어요. 다른 메뉴를 찾아보세요.</div>'}function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}$('#filters').addEventListener('click',e=>{let b=e.target.closest('[data-cat]');if(b){active=b.dataset.cat;renderFilters();render()}});$('#searchBtn').onclick=render;$('#search').oninput=render;$('#sort').onchange=render;$('#feed').addEventListener('click',e=>{let b=e.target.closest('[data-like]');if(b){let id=Number(b.dataset.like);if(liked.has(id)){liked.delete(id);posts.find(p=>p.id===id).likes--}else{liked.add(id);posts.find(p=>p.id===id).likes++}render()}});function modal(v){$('#back').style.display=v?'flex':'none'}$('#write').onclick=()=>modal(true);$('#close').onclick=$('#cancel').onclick=()=>modal(false);$('#back').onclick=e=>{if(e.target===$('#back'))modal(false)};$('#postForm').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);let emoji={한식:'🍲',중식:'🥡',일식:'🍣',양식:'🍝',분식:'🍢'}[f.get('category')]||'🍽️';posts.unshift({id:Date.now(),title:f.get('title'),price:Number(f.get('price'))||0,category:f.get('category'),area:f.get('area'),emoji,desc:f.get('desc'),author:f.get('author')||'동네주민',likes:0});active='전체';renderFilters();render();e.target.reset();modal(false);toast('미리보기 게시글이 추가됐어요!')};$('#region').onclick=()=>toast('지역 선택 기능은 실제 서비스 연결 단계에서 추가할게요.');renderFilters();render();
+</script>
+<script>
+// Supabase REST API: public anon access (no login)
+const SUPABASE_URL = 'https://jrulyzxanulvqzbqoisv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_6ZArk5QgIG-6Oi1ulrQk3A_xOG1lI80';
+const POSTS_API = `${SUPABASE_URL}/rest/v1/posts`;
+const apiHeaders = {
+  apikey: SUPABASE_KEY,
+  Authorization: `Bearer ${SUPABASE_KEY}`,
+  'Content-Type': 'application/json'
+};
+const demoPosts = [...posts];
+function fromDatabase(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    price: Number(row.price) || 0,
+    category: row.category || '기타',
+    area: row.area || row.region || '동네 미지정',
+    emoji: row.emoji || '🍽️',
+    desc: row.description || '',
+    author: row.author || '동네주민',
+    likes: 0,
+    created_at: row.created_at
+  };
+}
+async function loadSharedPosts() {
+  try {
+    const response = await fetch(`${POSTS_API}?select=*&order=created_at.desc`, { headers: apiHeaders });
+    if (!response.ok) throw new Error(`게시글 조회 오류 (${response.status}): ${await response.text()}`);
+    const rows = await response.json();
+    posts = rows.length ? rows.map(fromDatabase) : demoPosts;
+    renderFilters();
+    render();
+    toast(rows.length ? `공유 게시글 ${rows.length}개를 불러왔어요.` : 'Supabase 연결 성공! 첫 게시글을 등록해 보세요.');
+  } catch (error) {
+    console.error('Supabase load error:', error);
+    posts = demoPosts;
+    renderFilters();
+    render();
+    toast('데이터 연결 실패: 배포 주소와 Supabase 정책을 확인해 주세요.');
+  }
+}
+// Replace the local-only form handler with a real database insert.
+$('#postForm').onsubmit = async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const data = new FormData(form);
+  const category = String(data.get('category') || '기타');
+  const emoji = { 한식:'🍲', 중식:'🥡', 일식:'🍣', 양식:'🍝', 분식:'🍢', 카페:'☕' }[category] || '🍽️';
+  const payload = {
+    title: String(data.get('title') || '').trim(),
+    price: Number(data.get('price')) || 0,
+    category,
+    area: String(data.get('area') || '').trim(),
+    region: '서울 마포구',
+    emoji,
+    bg: '#f2e9df',
+    description: String(data.get('desc') || '').trim(),
+    author: String(data.get('author') || '').trim() || '동네주민'
+  };
+  if (!payload.title || !payload.area || !payload.description) {
+    toast('메뉴 이름, 동네, 추천 이유를 입력해 주세요.');
+    return;
+  }
+  const submitButton = form.querySelector('.actions button:not([type]), .actions button[type="submit"]');
+  if (submitButton) { submitButton.disabled = true; submitButton.textContent = '등록 중…'; }
+  try {
+    const response = await fetch(POSTS_API, {
+      method: 'POST',
+      headers: { ...apiHeaders, Prefer: 'return=representation' },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) throw new Error(`등록 실패 (${response.status}): ${(await response.text()).slice(0, 160)}`);
+    const inserted = await response.json();
+    if (!inserted.length) throw new Error('저장 결과를 확인하지 못했어요.');
+    posts.unshift(fromDatabase(inserted[0]));
+    active = '전체';
+    renderFilters();
+    render();
+    form.reset();
+    modal(false);
+    toast('게시글이 동네 피드에 등록됐어요!');
+  } catch (error) {
+    console.error('Supabase insert error:', error);
+    toast(error.message.includes('Failed to fetch') ? '네트워크 연결 실패: 배포된 사이트 주소에서 실행해 주세요.' : error.message.slice(0, 110));
+  } finally {
+    if (submitButton) { submitButton.disabled = false; submitButton.textContent = '등록하기'; }
+  }
+};
+loadSharedPosts();
+</script>
+
+</body></html>
