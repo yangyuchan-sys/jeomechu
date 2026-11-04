@@ -627,35 +627,42 @@ $('#postForm').onsubmit=async event=>{
 };
 
 loadSharedPosts();
-  // 사진 확대 기능
+
+// 사진 확대 기능
+const photoModal = document.getElementById('photoModal');
+const expandedPhoto = document.getElementById('expandedPhoto');
+const closePhoto = document.getElementById('closePhoto');
+
+// 게시글 사진 클릭
+document.getElementById('feed').addEventListener('click', function(e) {
+  const photo = e.target.closest('.food img');
+
+  if (!photo) return;
+
+  expandedPhoto.src = photo.src;
+  photoModal.classList.add('active');
+});
+
+// 확대창 닫기
+function closeExpandedPhoto() {
+  photoModal.classList.remove('active');
+  expandedPhoto.src = '';
+}
+
+// X 버튼 클릭
+closePhoto.addEventListener('click', closeExpandedPhoto);
+
+// 사진 바깥 영역 클릭
+photoModal.addEventListener('click', function(e) {
+  if (e.target === photoModal) {
+    closeExpandedPhoto();
+  }
+});
 
 // ESC 키로 닫기
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeExpandedPhoto();
-  }
-});
-const photoModal = document.getElementById('photoModal');
-const expandedPhoto = document.getElementById('expandedPhoto');
-
-document.addEventListener('click', function(e) {
-  const photo = e.target.closest('.post-card img');
-
-  if (photo && photo.src) {
-    expandedPhoto.src = photo.src;
-    photoModal.classList.add('active');
-  }
-});
-
-document.getElementById('closePhoto').addEventListener('click', function() {
-  photoModal.classList.remove('active');
-  expandedPhoto.src = '';
-});
-
-photoModal.addEventListener('click', function(e) {
-  if (e.target === photoModal) {
-    photoModal.classList.remove('active');
-    expandedPhoto.src = '';
   }
 });
 </script>
