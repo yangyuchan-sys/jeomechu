@@ -1,671 +1,115 @@
-
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>동네 한 끼</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#fff;color:#202923;font-family:Arial,'Noto Sans KR',sans-serif}
-.wrap{max-width:1100px;margin:auto;padding:0 24px}
-.top{height:76px;border-bottom:1px solid #e8ece9;display:flex;align-items:center;justify-content:space-between}
-.brand{font-weight:850;font-size:23px;color:#245b45}
-.brand small{display:block;font-size:10px;color:#84938a}
-.location{border:1px solid #e2e8e3;border-radius:30px;padding:10px;background:white}
-.hero{padding:38px 0 25px}
-.eyebrow{font-size:12px;color:#64816f;font-weight:750}
-.hero h1{font-size:32px;margin:9px 0}
-.hero p{color:#7b877f;font-size:14px}
-.search{margin-top:22px;display:flex;gap:9px}
-.search input{flex:1;min-width:0;border:1px solid #e4e9e5;border-radius:13px;padding:14px}
-.btn{border:0;border-radius:12px;padding:12px 17px;background:#245b45;color:white;font-weight:700;cursor:pointer}
-.filters{display:flex;gap:8px;overflow:auto;padding:5px 0 20px}
-.chip{white-space:nowrap;border:1px solid #e5eae6;background:white;border-radius:30px;padding:8px 14px;cursor:pointer}
-.chip.active{background:#eaf2ed;color:#244b39;font-weight:750}
-.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:12px 0 15px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
-.card{border:1px solid #e9edea;border-radius:18px;overflow:hidden;background:white}
-.food{height:135px;display:grid;place-items:center;font-size:62px;background:#f2e9df;overflow:hidden}
-.food img{width:100%;height:100%;object-fit:cover}
-.cardbody{padding:15px}
-.meta{font-size:11px;color:#8a968e}
-.card h3{font-size:16px;margin:7px 0}
-.desc{font-size:12px;color:#758078;line-height:1.5;min-height:36px}
-.bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px}
-.like{border:0;background:transparent;color:#728078;cursor:pointer;font-size:14px}
-.like.on{color:#d45d62}
-.price{font-weight:750;color:#34483b}
-.empty{padding:35px;text-align:center;color:#8b968e;grid-column:1/-1}
-.footer{padding:30px 0 45px;color:#9aa49d;font-size:11px;text-align:center}
-.modalback{position:fixed;inset:0;background:#1119;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}
-.modal{width:min(500px,100%);background:white;border-radius:20px;padding:23px;max-height:90vh;overflow:auto}
-.modal h2{margin:0 0 18px}
-.field{display:grid;gap:6px;margin:12px 0}
-.field label{font-size:12px;color:#738078}
-.field input,.field textarea,.field select{width:100%;border:1px solid #e1e8e2;border-radius:10px;padding:12px;background:white;font:inherit}
-.field textarea{min-height:85px}
-.preview{width:100%;max-height:190px;object-fit:cover;border-radius:10px;display:none;margin-top:8px}
-.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
-.secondary{background:#eef2ef;color:#3b5143}
-.close{float:right;border:0;background:transparent;font-size:22px;cursor:pointer}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#263a2e;color:white;padding:11px 16px;border-radius:30px;font-size:13px;display:none;z-index:8}
-.muted{color:#89948d;font-size:12px}
-@media(max-width:760px){
-.wrap{padding:0 17px}
-.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-.food{height:110px;font-size:52px}
-.hero{padding-top:28px}
-.hero h1{font-size:28px}
-}
-@media(max-width:440px){.grid{grid-template-columns:1fr}.food{height:130px}}
-.photo-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.88);
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.photo-modal.active {
-  display: flex;
-}
-
-.photo-modal img {
-  max-width: 95%;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 10px;
-}
-
-.photo-modal .close-photo {
-  position: absolute;
-  top: 20px;
-  right: 25px;
-  color: white;
-  font-size: 35px;
-  cursor: pointer;
-}
-</style>
-</head>
-<body>
-
-<div id="app">
-<header class="top wrap">
-  <div class="brand">동네 한 끼
-    <small>YOUR NEIGHBORHOOD FOOD PICK</small>
-  </div>
-  <select class="location" id="region">
-  <option value="전체 지역" selected>전체 지역</option>
-<option value="서울 마포구">서울 마포구</option>
-<option value="서울 서대문구">서울 서대문구</option>
-<option value="서울 영등포구">서울 영등포구</option>
-<option value="서울 강남구">서울 강남구</option>
-<option value="서울 관악구">서울 관악구</option>
-
-<option value="인천 제물포구">인천 제물포구</option>
-<option value="인천 영종구">인천 영종구</option>
-<option value="인천 미추홀구">인천 미추홀구</option>
-<option value="인천 연수구">인천 연수구</option>
-<option value="인천 남동구">인천 남동구</option>
-<option value="인천 부평구">인천 부평구</option>
-<option value="인천 계양구">인천 계양구</option>
-<option value="인천 서해구">인천 서해구</option>
-<option value="인천 검단구">인천 검단구</option>
-<option value="인천 강화군">인천 강화군</option>
-<option value="인천 옹진군">인천 옹진군</option>
-
-<option value="전체 지역">전체 지역</option>
-  </select>
-</header>
-
-<main class="wrap">
-<section class="hero">
-  <div class="eyebrow">오늘 저녁, 뭐 먹지?</div>
-  <h1>우리 동네 사람들의<br>진짜 한 끼 추천</h1>
-  <p>광고보다 솔직한 이웃들의 메뉴 추천을 만나보세요.</p>
-  <div class="search">
-    <input id="search" placeholder="메뉴, 동네, 음식점 검색">
-    <button class="btn" id="searchBtn">검색</button>
-  </div>
-</section>
-
-<nav class="filters" id="filters"></nav>
-
-<div class="sectionhead">
-  <h2>동네 추천 피드</h2>
-  <select id="sort" class="chip">
-    <option value="popular">인기순</option>
-    <option value="latest">최신순</option>
-  </select>
-</div>
-
-<section class="grid" id="feed"></section>
-<div class="footer">동네 한 끼 · 우리 동네의 맛있는 발견</div>
-</main>
-
-<div style="position:fixed;right:24px;bottom:24px">
-  <button class="btn" id="write">＋ 추천 작성하기</button>
-</div>
-</div>
-
-<div class="modalback" id="back">
-<div class="modal">
-<button class="close" id="close">×</button>
-<h2>오늘의 한 끼 추천</h2>
-
-<form id="postForm">
-<div class="field">
-<label>메뉴 이름</label>
-<input name="title" required placeholder="예: 얼큰 순두부찌개">
-</div>
-
-<div class="field">
-<label>가격 (원)</label>
-<input name="price" type="number" min="0" placeholder="9000">
-</div>
-
-<div class="field">
-<label>음식 종류</label>
-<select name="category">
-<option>한식</option><option>중식</option>
-<option>일식</option><option>양식</option>
-<option>분식</option><option>카페</option><option>기타</option>
-</select>
-</div>
-
-<div class="field">
-<label>지역</label>
-<select name="region" id="postRegion">
-<option value="서울 마포구">서울 마포구</option>
-<option value="서울 서대문구">서울 서대문구</option>
-<option value="서울 영등포구">서울 영등포구</option>
-<option value="서울 강남구">서울 강남구</option>
-<option value="서울 관악구">서울 관악구</option>
-
-<option value="인천 제물포구">인천 제물포구</option>
-<option value="인천 영종구">인천 영종구</option>
-<option value="인천 미추홀구">인천 미추홀구</option>
-<option value="인천 연수구">인천 연수구</option>
-<option value="인천 남동구">인천 남동구</option>
-<option value="인천 부평구">인천 부평구</option>
-<option value="인천 계양구">인천 계양구</option>
-<option value="인천 서해구">인천 서해구</option>
-<option value="인천 검단구">인천 검단구</option>
-<option value="인천 강화군">인천 강화군</option>
-<option value="인천 옹진군">인천 옹진군</option>
-
-<option value="전체 지역">전체 지역</option>
-</select>
-</div>
-
-<div class="field">
-<label>동네</label>
-<input name="area" required placeholder="예: 합정동">
-</div>
-
-<div class="field">
-<label>추천 이유</label>
-<textarea name="desc" required placeholder="왜 추천하는지 알려주세요"></textarea>
-</div>
-
-<div class="field">
-<label>음식 사진 (선택)</label>
-<input type="file" name="photo" id="photoInput" accept="image/*">
-<img id="photoPreview" class="preview" alt="사진 미리보기">
-<small class="muted">사진이 없으면 기존 음식 그림이 표시돼요. 최대 5MB</small>
-</div>
-
-<div class="field">
-<label>작성자 닉네임</label>
-<input name="author" placeholder="동네주민">
-</div>
-
-<div class="actions">
-<button type="button" class="btn secondary" id="cancel">취소</button>
-<button type="submit" class="btn">등록하기</button>
-</div>
-</form>
-</div>
-</div>
-
-<div class="toast" id="toast"></div>
-  
-<!-- 사진 확대창 -->
-<div class="photo-modal" id="photoModal">
-  <span class="close-photo" id="closePhoto">&times;</span>
-  <img id="expandedPhoto" src="" alt="확대된 음식 사진">
-  
-</div>
+:root{--site-primary:#245b45;--site-secondary:#eaf2ed;--site-background:#ffffff;--site-on-primary:#ffffff;--site-on-secondary:#244b39;--site-on-background:#202923;--site-font-body:Inter,'Noto Sans KR',system-ui,sans-serif;--site-font-heading:Inter,'Noto Sans KR',system-ui,sans-serif;--site-heading-scale:1;--site-spacing-scale:1;--site-radius-scale:1;--site-decoration-opacity:1;color-scheme:light dark}
+*{box-sizing:border-box}body{margin:0;background:light-dark(#fff,#141916);color:light-dark(#202923,#edf3ef);font-family:var(--site-font-body)}#app{min-height:100vh;background-color:var(--site-background);color:light-dark(#202923,#edf3ef);border-radius:0}.wrap{max-width:1100px;margin:auto;padding:0 24px}.top{height:76px;border-bottom:1px solid light-dark(#e8ece9,#303a34);display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;font-size:23px;letter-spacing:-1px;color:var(--site-primary)}.brand small{display:block;font-size:10px;letter-spacing:1px;color:#84938a;font-weight:600}.location{border:1px solid #e2e8e3;border-radius:30px;padding:10px 14px;background:var(--site-background);color:inherit;font:inherit;max-width:190px}.hero{padding:38px 0 25px}.eyebrow{font-size:12px;color:#64816f;font-weight:750;letter-spacing:1px}.hero h1{font-size:calc(32px * var(--site-heading-scale));letter-spacing:-1.5px;margin:9px 0}.hero p{margin:0;color:#7b877f;font-size:14px}.search{margin-top:22px;display:flex;gap:9px}.search input{flex:1;min-width:0;border:1px solid #e4e9e5;border-radius:13px;padding:14px 16px;font-size:14px;background:transparent;color:inherit}.btn{border:0;border-radius:12px;padding:12px 17px;background:var(--site-primary);color:white;font-weight:700;cursor:pointer}.filters{display:flex;gap:8px;overflow:auto;padding:5px 0 20px}.chip{white-space:nowrap;border:1px solid #e5eae6;background:transparent;color:inherit;border-radius:30px;padding:8px 14px;cursor:pointer;font-size:13px}.chip.active{background:var(--site-secondary);border-color:var(--site-secondary);color:var(--site-on-secondary);font-weight:750}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:12px 0 15px}.sectionhead h2{font-size:19px;letter-spacing:-.5px;margin:0}.muted{color:#89948d;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{border:1px solid #e9edea;border-radius:18px;overflow:hidden;background:light-dark(#fff,#1d2520);cursor:pointer;transition:.18s}.card:hover{transform:translateY(-2px);box-shadow:0 8px 25px #193d2510}.food{height:135px;display:grid;place-items:center;font-size:62px;background:#f2e9df;overflow:hidden}.food img{width:100%;height:100%;object-fit:cover;display:block}.cardbody{padding:15px}.meta{font-size:11px;color:#8a968e}.card h3{font-size:16px;margin:7px 0 5px;letter-spacing:-.3px}.desc{font-size:12px;color:#758078;line-height:1.5;min-height:36px}.bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:#87928a}.like{border:0;background:transparent;color:#728078;cursor:pointer;font-size:13px}.like.on{color:#d45d62}.price{font-weight:750;color:#34483b}.empty{padding:35px;text-align:center;color:#8b968e;grid-column:1/-1}.footer{padding:30px 0 45px;color:#9aa49d;font-size:11px;text-align:center}.modalback{position:fixed;inset:0;background:#1119;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal{width:min(500px,100%);background:light-dark(#fff,#202923);border-radius:20px;padding:23px;max-height:90vh;overflow:auto}.modal h2{margin:0 0 18px}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;color:#738078}.field input,.field textarea,.field select{width:100%;border:1px solid #e1e8e2;border-radius:10px;padding:12px;background:transparent;color:inherit;font:inherit}.field textarea{min-height:85px;resize:vertical}.field input[type=file]{padding:9px}.preview{width:100%;max-height:190px;object-fit:cover;border-radius:10px;display:none;margin-top:8px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.secondary{background:#eef2ef;color:#3b5143}.close{float:right;border:0;background:transparent;font-size:22px;cursor:pointer;color:inherit}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#263a2e;color:white;padding:11px 16px;border-radius:30px;font-size:13px;display:none;z-index:8}
+@media(max-width:760px){.wrap{padding:0 17px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.food{height:110px;font-size:52px}.hero{padding-top:28px}.hero h1{font-size:28px}.cardbody{padding:12px}}@media(max-width:440px){.grid{grid-template-columns:1fr}.food{height:130px}}
+</style></head><body><div id="app"><header class="top wrap"><div class="brand">동네 한 끼<small>YOUR NEIGHBORHOOD FOOD PICK</small></div><select class="location" id="region" aria-label="피드 지역 선택"><option value="서울 마포구">📍 서울 마포구</option><option value="서울 서대문구">서울 서대문구</option><option value="서울 영등포구">서울 영등포구</option><option value="서울 강남구">서울 강남구</option><option value="서울 관악구">서울 관악구</option><option value="인천 부평구">인천 부평구</option><option value="인천 남동구">인천 남동구</option><option value="인천 미추홀구">인천 미추홀구</option><option value="인천 연수구">인천 연수구</option><option value="전체 지역">전체 지역</option></select></header><main class="wrap"><section class="hero"><div class="eyebrow">오늘 저녁, 뭐 먹지?</div><h1>우리 동네 사람들의<br>진짜 한 끼 추천</h1><p>광고보다 솔직한 이웃들의 메뉴 추천을 만나보세요.</p><div class="search"><input id="search" placeholder="메뉴, 동네, 음식점 검색"><button class="btn" id="searchBtn">검색</button></div></section><nav class="filters" id="filters"></nav><div class="sectionhead"><h2>동네 추천 피드</h2><select id="sort" class="chip"><option value="popular">인기순</option><option value="latest">최신순</option></select></div><section class="grid" id="feed"></section><div class="footer">동네 한 끼 · 우리 동네의 맛있는 발견</div></main><div style="position:fixed;right:24px;bottom:24px"><button class="btn" id="write">＋ 추천 작성하기</button></div></div>
+<div class="modalback" id="back"><div class="modal"><button class="close" id="close">×</button><h2>오늘의 한 끼 추천</h2><form id="postForm"><div class="field"><label>메뉴 이름</label><input name="title" required placeholder="예: 얼큰 순두부찌개"></div><div class="field"><label>가격 (원)</label><input name="price" type="number" min="0" placeholder="9000"></div><div class="field"><label>음식 종류</label><select name="category"><option>전체</option><option>한식</option><option>중식</option><option>일식</option><option>양식</option><option>분식</option><option>기타</option></select></div><div class="field"><label>지역</label><select name="region" id="postRegion"><option>서울 마포구</option><option>서울 서대문구</option><option>서울 영등포구</option><option>서울 강남구</option><option>서울 관악구</option><option>인천 부평구</option><option>인천 남동구</option><option>인천 미추홀구</option><option>인천 연수구</option></select></div><div class="field"><label>동네</label><input name="area" required placeholder="예: 합정동"></div><div class="field"><label>추천 이유</label><textarea name="desc" required placeholder="왜 추천하는지 알려주세요"></textarea></div><div class="field"><label>음식 사진 (선택)</label><input type="file" name="photo" id="photoInput" accept="image/*"><img id="photoPreview" class="preview" alt="선택한 사진 미리보기"><small class="muted">사진을 선택하지 않으면 기존 음식 그림이 표시돼요. 최대 5MB</small></div><div class="field"><label>작성자 닉네임</label><input name="author" placeholder="동네주민"></div><div class="actions"><button type="button" class="btn secondary" id="cancel">취소</button><button class="btn">등록하기</button></div></form></div></div><div class="toast" id="toast"></div>
 <script>
 const categories=['전체','한식','중식','일식','양식','분식','카페','기타'];
+const regions=['서울 마포구','서울 서대문구','서울 영등포구','서울 강남구','서울 관악구','인천 부평구','인천 남동구','인천 미추홀구','인천 연수구'];
 let active='전체';
 let selectedRegion=localStorage.getItem('dh_region')||'서울 마포구';
 let posts=[];
 let liked=new Set();
-
 const $=s=>document.querySelector(s);
-
-function toast(t){
-  $('#toast').textContent=t;
-  $('#toast').style.display='block';
-  clearTimeout(window.__toastTimer);
-  window.__toastTimer=setTimeout(()=>$('#toast').style.display='none',2400);
-}
-
-function esc(s){
-  return String(s??'').replace(/[&<>"']/g,c=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
-
-function renderFilters(){
-  $('#filters').innerHTML=categories.map(c=>
-    `<button class="chip ${c===active?'active':''}" data-cat="${c}">${c}</button>`
-  ).join('');
-}
-
+function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>$('#toast').style.display='none',2400)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderFilters(){$('#filters').innerHTML=categories.map(c=>`<button class="chip ${c===active?'active':''}" data-cat="${c}">${c}</button>`).join('')}
 function render(){
   const q=$('#search').value.toLowerCase();
-
-  let list=posts.filter(p=>
-    (selectedRegion==='전체 지역'||p.region===selectedRegion)&&
-    (active==='전체'||p.category===active)&&
-    [p.title,p.area,p.desc,p.region].join(' ').toLowerCase().includes(q)
-  );
-
-  list.sort((a,b)=>
-    $('#sort').value==='popular'
-      ? b.likes-a.likes
-      : new Date(b.created_at||0)-new Date(a.created_at||0)
-  );
-
-  $('#feed').innerHTML=list.length?list.map(p=>`
-    <article class="card">
-      <div class="food">
-        ${p.photo_url
-          ? `<img src="${esc(p.photo_url)}" alt="${esc(p.title)} 사진" loading="lazy">`
-          : esc(p.emoji||'🍽️')}
-      </div>
-      <div class="cardbody">
-        <div class="meta">${esc(p.region||'지역 미지정')} · ${esc(p.area)} · ${esc(p.category)}</div>
-        <h3>${esc(p.title)}</h3>
-        <div class="desc">${esc(p.desc)}</div>
-        <div class="bottom">
-          <span class="price">${Number(p.price).toLocaleString()}원</span>
-          <button class="like ${liked.has(String(p.id))?'on':''}" data-like="${esc(p.id)}">
-            ♥ ${p.likes||0}
-          </button>
-        </div>
-        <div class="muted" style="margin-top:8px">${esc(p.author||'동네주민')}</div>
-      </div>
-    </article>
-  `).join(''):'<div class="empty">이 지역에는 아직 추천이 없어요. 첫 번째 메뉴를 추천해 보세요.</div>';
+  let list=posts.filter(p=>(selectedRegion==='전체 지역'||p.region===selectedRegion)&&(active==='전체'||p.category===active)&&[p.title,p.area,p.desc,p.region].join(' ').toLowerCase().includes(q));
+  list.sort((a,b)=>$('#sort').value==='popular'?b.likes-a.likes:new Date(b.created_at||0)-new Date(a.created_at||0));
+  $('#feed').innerHTML=list.length?list.map(p=>`<article class="card"><div class="food">${p.photo_url?`<img src="${esc(p.photo_url)}" alt="${esc(p.title)} 사진" loading="lazy">`:esc(p.emoji||'🍽️')}</div><div class="cardbody"><div class="meta">${esc(p.region||'지역 미지정')} · ${esc(p.area)} · ${esc(p.category)}</div><h3>${esc(p.title)}</h3><div class="desc">${esc(p.desc)}</div><div class="bottom"><span class="price">${Number(p.price).toLocaleString()}원</span><button class="like ${liked.has(String(p.id))?'on':''}" data-like="${esc(p.id)}" aria-label="좋아요">♥ ${p.likes||0}</button></div><div class="muted" style="margin-top:8px">${esc(p.author||'동네주민')}</div></div></article>`).join(''):'<div class="empty">이 지역에는 아직 추천이 없어요. 첫 번째 메뉴를 추천해 보세요.</div>';
 }
-
-$('#filters').addEventListener('click',e=>{
-  const b=e.target.closest('[data-cat]');
-  if(b){active=b.dataset.cat;renderFilters();render();}
-});
-
-$('#searchBtn').onclick=render;
-$('#search').oninput=render;
-$('#sort').onchange=render;
-
+$('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(b){active=b.dataset.cat;renderFilters();render()}});
+$('#searchBtn').onclick=render;$('#search').oninput=render;$('#sort').onchange=render;
 $('#region').value=selectedRegion;
-
-$('#region').addEventListener('change',()=>{
-  selectedRegion=$('#region').value;
-  localStorage.setItem('dh_region',selectedRegion);
-  $('#postRegion').value=selectedRegion==='전체 지역'?'서울 마포구':selectedRegion;
-  render();
-  toast(`${selectedRegion} 피드를 보여줍니다.`);
-});
-
-function modal(v){$('#back').style.display=v?'flex':'none';}
-
-$('#write').onclick=()=>{
-  $('#postRegion').value=selectedRegion==='전체 지역'?'서울 마포구':selectedRegion;
-  modal(true);
-};
-
+$('#region').addEventListener('change',()=>{selectedRegion=$('#region').value;localStorage.setItem('dh_region',selectedRegion);$('#postRegion').value=selectedRegion==='전체 지역'?'서울 마포구':selectedRegion;render();toast(`${selectedRegion} 피드를 보여줍니다.`)});
+function modal(v){$('#back').style.display=v?'flex':'none'}
+$('#write').onclick=()=>{ $('#postRegion').value=selectedRegion==='전체 지역'?'서울 마포구':selectedRegion; modal(true); };
 $('#close').onclick=$('#cancel').onclick=()=>modal(false);
 $('#back').onclick=e=>{if(e.target===$('#back'))modal(false)};
-
-$('#photoInput').addEventListener('change',()=>{
-  const file=$('#photoInput').files[0];
-  const preview=$('#photoPreview');
-
-  if(!file){
-    preview.removeAttribute('src');
-    preview.style.display='none';
-    return;
-  }
-
-  if(!file.type.startsWith('image/')){
-    toast('이미지 파일만 선택할 수 있어요.');
-    $('#photoInput').value='';
-    return;
-  }
-
-  if(file.size>5*1024*1024){
-    toast('사진은 5MB 이하로 선택해 주세요.');
-    $('#photoInput').value='';
-    return;
-  }
-
-  preview.src=URL.createObjectURL(file);
-  preview.style.display='block';
-});
-
+$('#photoInput').addEventListener('change',()=>{const file=$('#photoInput').files[0];const preview=$('#photoPreview');if(!file){preview.removeAttribute('src');preview.style.display='none';return;}if(!file.type.startsWith('image/')){toast('이미지 파일만 선택할 수 있어요.');$('#photoInput').value='';return;}if(file.size>5*1024*1024){toast('사진은 5MB 이하로 선택해 주세요.');$('#photoInput').value='';return;}preview.src=URL.createObjectURL(file);preview.style.display='block';});
 renderFilters();
 </script>
-
 <script>
-// Supabase 설정
+// Supabase REST API: public anon access (no login)
 const SUPABASE_URL='https://jrulyzxanulvqzbqoisv.supabase.co';
 const SUPABASE_KEY='sb_publishable_6ZArkQ5gIG-6Oi1ulrQk3A_xOG1lI80';
-
 const POSTS_API=`${SUPABASE_URL}/rest/v1/posts`;
 const LIKES_API=`${SUPABASE_URL}/rest/v1/post_likes`;
 const STORAGE_API=`${SUPABASE_URL}/storage/v1/object`;
 const BUCKET='post-photos';
-
-const apiHeaders={
-  apikey:SUPABASE_KEY,
-  Authorization:`Bearer ${SUPABASE_KEY}`,
-  'Content-Type':'application/json'
-};
-
-// 비로그인 이용자별 임시 식별자
+const apiHeaders={apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'};
 let clientId=localStorage.getItem('dh_client_id');
-if(!clientId){
-  clientId=crypto.randomUUID();
-  localStorage.setItem('dh_client_id',clientId);
-}
-
-function fromDatabase(row){
-  return {
-    id:row.id,
-    title:row.title,
-    price:Number(row.price)||0,
-    category:row.category||'기타',
-    area:row.area||'동네 미지정',
-    region:row.region||'서울 마포구',
-    emoji:row.emoji||'🍽️',
-    desc:row.description||'',
-    author:row.author||'동네주민',
-    likes:0,
-    photo_url:row.photo_url||'',
-    created_at:row.created_at
-  };
-}
-
-// 좋아요 정보 불러오기
+if(!clientId){clientId=crypto.randomUUID();localStorage.setItem('dh_client_id',clientId)}
+function fromDatabase(row){return{id:row.id,title:row.title,price:Number(row.price)||0,category:row.category||'기타',area:row.area||'동네 미지정',region:row.region||'서울 마포구',emoji:row.emoji||'🍽️',desc:row.description||'',author:row.author||'동네주민',likes:0,photo_url:row.photo_url||'',created_at:row.created_at}}
 async function loadLikes(){
-  const response=await fetch(`${LIKES_API}?select=post_id,client_id`,{
-    headers:apiHeaders
-  });
-
-  if(!response.ok){
-    throw new Error(`좋아요 조회 실패 (${response.status})`);
-  }
-
-  const rows=await response.json();
-  const counts=new Map();
-  liked=new Set();
-
-  rows.forEach(row=>{
-    const id=String(row.post_id);
-    counts.set(id,(counts.get(id)||0)+1);
-    if(row.client_id===clientId)liked.add(id);
-  });
-
-  posts.forEach(post=>{
-    post.likes=counts.get(String(post.id))||0;
-  });
+  const response=await fetch(`${LIKES_API}?select=post_id,client_id`,{headers:apiHeaders});
+  if(!response.ok)throw new Error(`좋아요 조회 실패 (${response.status})`);
+  const rows=await response.json();const counts=new Map();liked=new Set();
+  rows.forEach(row=>{const id=String(row.post_id);counts.set(id,(counts.get(id)||0)+1);if(row.client_id===clientId)liked.add(id)});
+  posts.forEach(post=>post.likes=counts.get(String(post.id))||0);
 }
-
-// 게시글 불러오기
 async function loadSharedPosts(){
   try{
-    const response=await fetch(
-      `${POSTS_API}?select=*&order=created_at.desc`,
-      {headers:apiHeaders}
-    );
-
-    if(!response.ok){
-      throw new Error(`게시글 조회 실패 (${response.status}): ${(await response.text()).slice(0,180)}`);
-    }
-
+    const response=await fetch(`${POSTS_API}?select=*&order=created_at.desc`,{headers:apiHeaders});
+    if(!response.ok)throw new Error(`게시글 조회 실패 (${response.status}): ${(await response.text()).slice(0,180)}`);
     posts=(await response.json()).map(fromDatabase);
-
-    try{
-      await loadLikes();
-    }catch(e){
-      console.warn(e);
-      toast('게시글은 불러왔지만 좋아요 정보를 불러오지 못했어요.');
-    }
-
+    try{await loadLikes()}catch(e){console.warn(e);toast('게시글은 불러왔지만 좋아요 정보를 불러오지 못했어요.')}
     render();
-  }catch(error){
-    console.error(error);
-    toast(error.message||'데이터를 불러오지 못했어요.');
-  }
+  }catch(error){console.error(error);toast(error.message||'데이터를 불러오지 못했어요.')}
 }
-
-// 사진 업로드
 async function uploadPhoto(file){
   if(!file)return '';
-
-  if(!file.type.startsWith('image/')){
-    throw new Error('이미지 파일만 업로드할 수 있어요.');
-  }
-
-  if(file.size>5*1024*1024){
-    throw new Error('사진은 5MB 이하로 선택해 주세요.');
-  }
-
-  const ext=(file.name.split('.').pop()||'jpg')
-    .toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
-
+  if(!file.type.startsWith('image/'))throw new Error('이미지 파일만 업로드할 수 있어요.');
+  if(file.size>5*1024*1024)throw new Error('사진은 5MB 이하로 선택해 주세요.');
+  const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
   const path=`${clientId}/${crypto.randomUUID()}.${ext}`;
-
-  const response=await fetch(`${STORAGE_API}/${BUCKET}/${path}`,{
-    method:'POST',
-    headers:{
-      apikey:SUPABASE_KEY,
-      Authorization:`Bearer ${SUPABASE_KEY}`,
-      'Content-Type':file.type,
-      'x-upsert':'false'
-    },
-    body:file
-  });
-
-  if(!response.ok){
-    throw new Error(`사진 업로드 실패 (${response.status}): ${(await response.text()).slice(0,160)}`);
-  }
-
+  const response=await fetch(`${STORAGE_API}/${BUCKET}/${path}`,{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
+  if(!response.ok)throw new Error(`사진 업로드 실패 (${response.status}): ${(await response.text()).slice(0,160)}`);
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
 }
-
-// 좋아요 클릭
 $('#feed').addEventListener('click',async e=>{
-  const button=e.target.closest('[data-like]');
-  if(!button)return;
-
-  const id=String(button.dataset.like);
-  button.disabled=true;
-
+  const button=e.target.closest('[data-like]');if(!button)return;
+  const id=String(button.dataset.like);button.disabled=true;
   try{
     if(liked.has(id)){
       const url=`${LIKES_API}?post_id=eq.${encodeURIComponent(id)}&client_id=eq.${encodeURIComponent(clientId)}`;
-
-      const response=await fetch(url,{
-        method:'DELETE',
-        headers:{...apiHeaders,Prefer:'return=minimal'}
-      });
-
-      if(!response.ok){
-        throw new Error(`좋아요 취소 실패 (${response.status})`);
-      }
-
+      const response=await fetch(url,{method:'DELETE',headers:{...apiHeaders,Prefer:'return=minimal'}});
+      if(!response.ok)throw new Error(`좋아요 취소 실패 (${response.status}): ${(await response.text()).slice(0,120)}`);
       liked.delete(id);
     }else{
-      const response=await fetch(LIKES_API,{
-        method:'POST',
-        headers:{...apiHeaders,Prefer:'return=minimal'},
-        body:JSON.stringify({post_id:id,client_id:clientId})
-      });
-
-      if(!response.ok){
-        const body=await response.text();
-
-        if(response.status===409){
-          liked.add(id);
-        }else{
-          throw new Error(`좋아요 등록 실패 (${response.status}): ${body.slice(0,120)}`);
-        }
-      }else{
-        liked.add(id);
-      }
+      const response=await fetch(LIKES_API,{method:'POST',headers:{...apiHeaders,Prefer:'return=minimal'},body:JSON.stringify({post_id:id,client_id:clientId})});
+      if(!response.ok){const body=await response.text();if(response.status===409){liked.add(id)}else throw new Error(`좋아요 등록 실패 (${response.status}): ${body.slice(0,120)}`)}
+      else liked.add(id);
     }
-
-    await loadLikes();
-    render();
-  }catch(error){
-    console.error(error);
-    toast(error.message||'좋아요 처리에 실패했어요.');
-  }finally{
-    button.disabled=false;
-  }
+    await loadLikes();render();
+  }catch(error){console.error(error);toast(error.message||'좋아요 처리에 실패했어요.')}
+  finally{button.disabled=false}
 });
-
-// 게시글 등록
 $('#postForm').onsubmit=async event=>{
-  event.preventDefault();
-
-  const form=event.currentTarget;
-  const data=new FormData(form);
-  const category=String(data.get('category')||'기타');
-
-  const emoji={
-    한식:'🍲',중식:'🥡',일식:'🍣',
-    양식:'🍝',분식:'🍢',카페:'☕'
-  }[category]||'🍽️';
-
-  const payload={
-    title:String(data.get('title')||'').trim(),
-    price:Number(data.get('price'))||0,
-    category,
-    area:String(data.get('area')||'').trim(),
-    region:String(data.get('region')||selectedRegion),
-    emoji,
-    bg:'#f2e9df',
-    description:String(data.get('desc')||'').trim(),
-    author:String(data.get('author')||'').trim()||'동네주민'
-  };
-
-  if(!payload.title||!payload.area||!payload.description){
-    toast('메뉴 이름, 동네, 추천 이유를 입력해 주세요.');
-    return;
-  }
-
-  const file=$('#photoInput').files[0];
-  const submitButton=form.querySelector('button[type="submit"]');
-
-  if(submitButton){
-    submitButton.disabled=true;
-    submitButton.textContent='등록 중…';
-  }
-
+  event.preventDefault();const form=event.currentTarget;const data=new FormData(form);const category=String(data.get('category')||'기타');
+  const emoji={한식:'🍲',중식:'🥡',일식:'🍣',양식:'🍝',분식:'🍢',카페:'☕'}[category]||'🍽️';
+  const payload={title:String(data.get('title')||'').trim(),price:Number(data.get('price'))||0,category,area:String(data.get('area')||'').trim(),region:String(data.get('region')||selectedRegion),emoji,bg:'#f2e9df',description:String(data.get('desc')||'').trim(),author:String(data.get('author')||'').trim()||'동네주민'};
+  if(!payload.title||!payload.area||!payload.description){toast('메뉴 이름, 동네, 추천 이유를 입력해 주세요.');return;}
+  const file=$('#photoInput').files[0];const submitButton=form.querySelector('button[type="submit"],.actions button:not([type])');
+  if(submitButton){submitButton.disabled=true;submitButton.textContent='등록 중…'}
   try{
-    if(file){
-      payload.photo_url=await uploadPhoto(file);
-    }
-
-    const response=await fetch(POSTS_API,{
-      method:'POST',
-      headers:{...apiHeaders,Prefer:'return=representation'},
-      body:JSON.stringify(payload)
-    });
-
-    if(!response.ok){
-      throw new Error(`게시글 등록 실패 (${response.status}): ${(await response.text()).slice(0,180)}`);
-    }
-
-    const inserted=await response.json();
-
-    if(!inserted.length){
-      throw new Error('저장 결과를 확인하지 못했어요.');
-    }
-
-    posts.unshift(fromDatabase(inserted[0]));
-    active='전체';
-    renderFilters();
-    render();
-
-    form.reset();
-    $('#photoPreview').style.display='none';
-    $('#photoPreview').removeAttribute('src');
-
-    modal(false);
-    toast('게시글이 등록됐어요!');
-
-  }catch(error){
-    console.error(error);
-    toast(error.message||'게시글 등록에 실패했어요.');
-  }finally{
-    if(submitButton){
-      submitButton.disabled=false;
-      submitButton.textContent='등록하기';
-    }
-  }
+    if(file)payload.photo_url=await uploadPhoto(file);
+    const response=await fetch(POSTS_API,{method:'POST',headers:{...apiHeaders,Prefer:'return=representation'},body:JSON.stringify(payload)});
+    if(!response.ok)throw new Error(`게시글 등록 실패 (${response.status}): ${(await response.text()).slice(0,180)}`);
+    const inserted=await response.json();if(!inserted.length)throw new Error('저장 결과를 확인하지 못했어요.');
+    posts.unshift(fromDatabase(inserted[0]));active='전체';renderFilters();render();form.reset();$('#photoPreview').style.display='none';$('#photoPreview').removeAttribute('src');modal(false);toast('게시글이 등록됐어요!');
+  }catch(error){console.error(error);toast(error.message||'게시글 등록에 실패했어요.')}
+  finally{if(submitButton){submitButton.disabled=false;submitButton.textContent='등록하기'}}
 };
-
 loadSharedPosts();
-
-// 사진 확대 기능
-const photoModal = document.getElementById('photoModal');
-const expandedPhoto = document.getElementById('expandedPhoto');
-const closePhoto = document.getElementById('closePhoto');
-
-// 게시글 사진 클릭
-document.getElementById('feed').addEventListener('click', function(e) {
-  const photo = e.target.closest('.food img');
-
-  if (!photo) return;
-
-  expandedPhoto.src = photo.src;
-  photoModal.classList.add('active');
-});
-
-// 확대창 닫기
-function closeExpandedPhoto() {
-  photoModal.classList.remove('active');
-  expandedPhoto.src = '';
-}
-
-// X 버튼 클릭
-closePhoto.addEventListener('click', closeExpandedPhoto);
-
-// 사진 바깥 영역 클릭
-photoModal.addEventListener('click', function(e) {
-  if (e.target === photoModal) {
-    closeExpandedPhoto();
-  }
-});
-
-// ESC 키로 닫기
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    closeExpandedPhoto();
-  }
-});
 </script>
-</body>
-</html>
 
+</body></html>
