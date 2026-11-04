@@ -233,7 +233,13 @@ body{margin:0;background:#fff;color:#202923;font-family:Arial,'Noto Sans KR',san
 </div>
 
 <div class="toast" id="toast"></div>
-
+  
+<!-- 사진 확대창 -->
+<div class="photo-modal" id="photoModal">
+  <span class="close-photo" id="closePhoto">&times;</span>
+  <img id="expandedPhoto" src="" alt="확대된 음식 사진">
+  
+</div>
 <script>
 const categories=['전체','한식','중식','일식','양식','분식','카페','기타'];
 let active='전체';
@@ -621,6 +627,42 @@ $('#postForm').onsubmit=async event=>{
 };
 
 loadSharedPosts();
+  // 사진 확대 기능
+const photoModal = document.getElementById('photoModal');
+const expandedPhoto = document.getElementById('expandedPhoto');
+const closePhoto = document.getElementById('closePhoto');
+
+// 게시글 사진 클릭
+document.getElementById('feed').addEventListener('click', function(e) {
+  const photo = e.target.closest('.food img');
+
+  if (!photo) return;
+
+  expandedPhoto.src = photo.src;
+  photoModal.classList.add('active');
+});
+
+// 확대창 닫기
+function closeExpandedPhoto() {
+  photoModal.classList.remove('active');
+  expandedPhoto.src = '';
+}
+
+closePhoto.addEventListener('click', closeExpandedPhoto);
+
+// 바깥 영역 클릭 시 닫기
+photoModal.addEventListener('click', function(e) {
+  if (e.target === photoModal) {
+    closeExpandedPhoto();
+  }
+});
+
+// ESC 키로 닫기
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeExpandedPhoto();
+  }
+});
 const photoModal = document.getElementById('photoModal');
 const expandedPhoto = document.getElementById('expandedPhoto');
 
@@ -645,10 +687,6 @@ photoModal.addEventListener('click', function(e) {
   }
 });
 </script>
-<div class="photo-modal" id="photoModal">
-  <span class="close-photo" id="closePhoto">&times;</span>
-  <img id="expandedPhoto" src="" alt="확대된 음식 사진">
-</div>
 </body>
 </html>
 
