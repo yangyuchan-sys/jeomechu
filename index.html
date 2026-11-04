@@ -59,6 +59,36 @@ body{margin:0;background:#fff;color:#202923;font-family:Arial,'Noto Sans KR',san
 .hero h1{font-size:28px}
 }
 @media(max-width:440px){.grid{grid-template-columns:1fr}.food{height:130px}}
+.photo-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.88);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.photo-modal.active {
+  display: flex;
+}
+
+.photo-modal img {
+  max-width: 95%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.photo-modal .close-photo {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -591,8 +621,34 @@ $('#postForm').onsubmit=async event=>{
 };
 
 loadSharedPosts();
-</script>
+const photoModal = document.getElementById('photoModal');
+const expandedPhoto = document.getElementById('expandedPhoto');
 
+document.addEventListener('click', function(e) {
+  const photo = e.target.closest('.post-card img');
+
+  if (photo && photo.src) {
+    expandedPhoto.src = photo.src;
+    photoModal.classList.add('active');
+  }
+});
+
+document.getElementById('closePhoto').addEventListener('click', function() {
+  photoModal.classList.remove('active');
+  expandedPhoto.src = '';
+});
+
+photoModal.addEventListener('click', function(e) {
+  if (e.target === photoModal) {
+    photoModal.classList.remove('active');
+    expandedPhoto.src = '';
+  }
+});
+</script>
+<div class="photo-modal" id="photoModal">
+  <span class="close-photo" id="closePhoto">&times;</span>
+  <img id="expandedPhoto" src="" alt="확대된 음식 사진">
+</div>
 </body>
 </html>
 
